@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: beige;
+            color: black;
+        }
+        
+        #container {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #map {
+            height: 80vh;
+            width: 80vw;
+        }
+        
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .h1 {
+            font-family: ui-monospace;
+            text-align: center;
+            font-size: .5em;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>SO WHERE DO YOU WANT TO GO?</h1>\
+    <form><input type="text" id="start" placeholder="Enter start address">
+
+        <input type="text" id="end" placeholder="Enter end address">
+
+        <button id="getDirectionsBtn"> Get Directions
+        </button>
+    </form>
+    <div id="container">
+
+        <div id="map">
+            <h1>SO WHERE DO YOU WANT TO GO?</h1>
+
+        </div>
+
+    </div>
+    <script>
+        var directionService;
+        var directionDisplay;
+
+        function initMap() {
+            let mapOptions = {
+                center: new google.maps.LatLng('26.40456027309141', '75.87186878147083'),
+
+                zoom: 16
+            }
+            let map = new google.maps.Map(document.getElementById('map'), mapOptions);
+            directionsService = new google.maps.DirectionsService();
+
+            directionsDisplay = new google.maps.DirectionsRenderer();
+
+            directionsDisplay.setMap(map);
+
+
+
+            // Add event listener to the "Get Directions" button
+
+            document.getElementById('getDirectionsBtn').addEventListener('click', function() {
+
+                calculateAndDisplayRoute();
+
+            });
+
+        }
+
+
+
+        function calculateAndDisplayRoute() {
+
+            var start = document.getElementById('start').value; // Get start address from input
+
+            var end = document.getElementById('end').value; // Get end address from input
+
+
+
+            var request = {
+
+                origin: start,
+
+                destination: end,
+
+                travelMode: 'DRIVING' // You can change the travel mode as needed
+
+            };
+
+
+
+            directionsService.route(request, function(result, status) {
+
+                if (status == 'OK') {
+
+                    directionsDisplay.setDirections(result);
+
+                    var shortestPath = 0;
+
+                    var legs = result.routes[0].legs;
+
+                    for (var i = 0; i < legs.length; i++) {
+
+                        shortestPath += legs[i].distance.value;
+
+                    }
+
+                    shortestPath /= 1000; // Convert distance to kilometers
+
+                    alert("Shortest path: " + shortestPath + " km");
+
+                } else {
+
+                    alert('Directions request failed due to ' + status);
+
+                }
+
+            });
+
+
+
+
+
+
+        }
+    </script>
+
+
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJhVe0mFhRdUNqibCNRBaSTgcZi4Wey6M&callback=initMap">
+    </script>
+</body>
+
+</html>
